@@ -12,6 +12,7 @@ var waypoints = [];
 var pieces = [];
 var currentWaypoint;
 var numPieces = 5;  //number of pieces the waypoints smash into
+var clickCoords;
 
 //create waypoints
 var waypoint1 = currentWaypoint = new Waypoint(100, 100);
@@ -55,7 +56,9 @@ function tick() {
     window.requestAnimationFrame(tick, canvas);
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    agent.seek(currentWaypoint);
+    if (clickCoords) {
+        agent.seek(clickCoords);
+    }
     agent.update();
 
     waypoints = waypoints.filter((aWaypoint) => {
@@ -89,6 +92,10 @@ function tick() {
 tick();
 
 document.getElementById('canvas').onclick = (e) => {
-    // Start/stop the agent's movement on click
-    agent.maxVelocity = agent.maxVelocity ? 0 : 5;
+    agent.maxVelocity = 5;
+    // set seek destination to the mouse's click coords
+    clickCoords = {
+        x: e.x,
+        y: e.y,
+    };
 }
