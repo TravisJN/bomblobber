@@ -38,4 +38,17 @@ export default class GameSpace {
 
         this.context.restore();
     }
+
+    drawWaypoints(waypoints) {
+        waypoints.forEach((waypoint) => {
+            this.drawWaypoint(waypoint);
+        });
+    }
+
+    // todo: use
+    drawPieces(pieces) {
+        pieces.forEach((piece) => {
+            this.drawPiece(piece);
+        })
+    }
 }

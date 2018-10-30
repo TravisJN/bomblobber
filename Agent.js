@@ -1,3 +1,4 @@
+
 export default class Agent {
     constructor(x, y) {
         this.color = "red";
@@ -15,36 +16,26 @@ export default class Agent {
         this.velocityY = 0;
         //this.angularAcceleration = 1;
 
-        this.maxVelocity = 5;
+        this.maxVelocity = 0;
         this.maxAcceleration = 1;
         this.rotation = 0;
+
+        this.steeringForce = {
+            linearX: 0,
+            linearY: 0,
+        };
     }
 
-    // Should we just have context be a global
-    // draw(context) {
-    //     context.save();
-    //     context.fillStyle = this.color;
-    //     context.strokeStyle = "black";
-    //     context.beginPath();
-    //     context.arc(this.x, this.y, this.radius, 0, 2*Math.PI, true);
-    //     context.stroke();
-    //     context.fill();
+    update() {
+        if (this.maxVelocity === 0) {
+            return;
+        }
 
-
-    //     context.translate(this.x, this.y);
-    //     context.rotate(this.rotation + Math.PI / 2);
-    //     context.fillRect(-this.cannonWidth / 2, 0, this.cannonWidth, -this.cannonHeight);
-    //     context.strokeRect(-this.cannonWidth / 2, 0, this.cannonWidth, -this.cannonHeight);
-
-    //     context.restore();
-    // }
-
-    update (steeringForce) {
         this.x += this.vx;
         this.y += this.vy;
 
-        this.vx += steeringForce.linearX;
-        this.vy += steeringForce.linearY;
+        this.vx += this.steeringForce.linearX;
+        this.vy += this.steeringForce.linearY;
 
         var speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
 
@@ -55,5 +46,17 @@ export default class Agent {
         }
 
         this.rotation = Math.atan2(this.vy, this.vx);
+    }
+
+    seek({ x, y }) {
+        var dx, dy;
+
+        dx = x - this.x;
+        dy = y - this.y;
+
+        var distance = Math.sqrt(dx * dx + dy * dy);
+
+        this.steeringForce.linearX = dx / distance * this.maxAcceleration;
+        this.steeringForce.linearY = dy / distance * this.maxAcceleration;
     }
 }
