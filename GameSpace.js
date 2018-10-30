@@ -6,7 +6,7 @@ export default class GameSpace {
 
     drawPiece({ x, y, radius }) {
         this.context.save();
-        this.context.StrokeStyle = "black";
+        this.context.StrokeStyle = "red";
         this.context.beginPath();
         this.context.arc(x, y, radius, 0, 2 * Math.PI, true);
         this.context.stroke();

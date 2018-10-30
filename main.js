@@ -4,42 +4,25 @@ import Agent from './Agent.js';
 import GameSpace from './GameSpace.js';
 import Piece from './Piece.js';
 import Waypoint from './Waypoint.js';
+import Utils from './Utils.js';
 
 //global variables
 var view = new GameSpace();
 var agent = new Agent(view.canvas.width / 2, 0);
+var numWaypoints = 50;
 var waypoints = [];
 var pieces = [];
-var currentWaypoint;
 var numPieces = 5;  //number of pieces the waypoints smash into
 var clickCoords;
 
-//create waypoints
-var waypoint1 = currentWaypoint = new Waypoint(100, 100);
-waypoints.push(waypoint1);
-var waypoint2 = new Waypoint(300, 100);
-waypoints.push(waypoint2);
-var waypoint3 = new Waypoint(300, 300);
-waypoints.push(waypoint3);
-var waypoint4 = new Waypoint(100, 300);
-waypoints.push(waypoint4);
-var waypoint5 = new Waypoint(350, 425);
-waypoints.push(waypoint5);
-
-//set next waypoint as target
-function nextWaypoint () {
-    if (currentWaypoint === waypoints.length - 1) {
-        currentWaypoint = 0;
-    } else {
-        currentWaypoint++;
-    }
-}
-
-function getNextWaypoint() {
-    let randomInt = Math.floor(Math.random() * waypoints.length);
-    // pick a random waypoint I guess
-    return waypoints[randomInt];
-}
+// Create an array of waypoints with random x,y values
+// Creating an array based on this:
+// https://stackoverflow.com/questions/3746725/create-a-javascript-array-containing-1-n
+waypoints = Array.from({length: numWaypoints}, () => {
+    let x = Math.floor(Math.random() * view.canvas.width);
+    let y = Math.floor(Math.random() * view.canvas.height);
+    return new Waypoint(x, y);
+});
 
 function smashWaypoint ({ x, y }) {
     //create small pieces at the current waypoint's position
@@ -62,19 +45,17 @@ function tick() {
     agent.update();
 
     waypoints = waypoints.filter((aWaypoint) => {
-        if (aWaypoint.checkCollision(agent)) {
+
+        if (Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
             smashWaypoint(aWaypoint);
             aWaypoint.isDestroyed = true;
             return false;
         }
+
         return true;
     });
 
-    if (waypoints.length > 0) {
-        if (currentWaypoint.isDestroyed) {
-            currentWaypoint = getNextWaypoint();
-        }
-    } else {
+    if (waypoints.length === 0) {
         agent.maxVelocity = 0;
     }
 
@@ -92,7 +73,7 @@ function tick() {
 tick();
 
 document.getElementById('canvas').onclick = (e) => {
-    agent.maxVelocity = 5;
+    agent.maxVelocity = agent.maxVelocity ? 0 : 5;
     // set seek destination to the mouse's click coords
     clickCoords = {
         x: e.x,

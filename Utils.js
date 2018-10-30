@@ -1,21 +1,6 @@
 
 export default class Utils {
 
-
-
-    // if (!window.requestAnimationFrame) {
-    // window.requestAnimationFrame = (window.webkitRequestAnimationFrame ||
-    //                                 window.mozRequestAnimationFrame ||
-    //                                 window.msRequestAnimationFrame ||
-    //                                 window.oRequestAnimationFrame ||
-    //                                 function (callback) {
-    //                                     return window.setTimeout(callback, 17 /*~ 1000/60*/);
-    //                                 });
-    // }
-    // constructor() {
-    //     this.utils = {};
-    // }
-
     /**
      * Keeps track of the current mouse position, relative to an element.
      * @param {HTMLElement} element
