@@ -50,4 +50,40 @@ export default class Utils {
     static areColliding(x1, y1, radius1, x2, y2, radius2) {
         return this.getDistance(x1, y1, x2, y2) <= radius1 + radius2;
     }
+
+    static getNewGrid(width, height, numHorizontalSections, numVerticalSections) {
+        let grid = {};
+
+        for (var i = 1; i <= numHorizontalSections; i++) {
+            let x = i * (width / numHorizontalSections);
+            grid[x] = {};
+            for (var j = 1; j <= numVerticalSections; j++) {
+                let y = j * (height / numVerticalSections);
+                grid[x][y] = [];
+            }
+        }
+
+        return grid;
+    }
+
+    // Takes a grid object and x,y coords and returns the section of the grid where those x,y coords are located
+    static getSectionFromGrid(grid, x, y) {
+        let xKey, yKey;
+
+        for (const xValue in grid) {
+            if (x < xValue) {
+                xKey = xValue;
+                break;
+            }
+        }
+
+        for (const yValue in grid[xKey]) {
+            if (y < yValue) {
+                yKey = yValue;
+                break;
+            }
+        }
+
+        return grid[xKey][yKey];
+    }
 }

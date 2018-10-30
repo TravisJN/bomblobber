@@ -1,7 +1,14 @@
+import Utils from './Utils.js';
+
 export default class GameSpace {
-    constructor() {
+    constructor(width, height) {
         this.canvas = document.getElementById("canvas");
         this.context = canvas.getContext("2d");
+
+        this.canvas.width = width;
+        this.canvas.height = height;
+
+        this.grid = Utils.getNewGrid(width, height, 4, 4);
     }
 
     drawPiece({ x, y, radius }) {
@@ -41,7 +48,9 @@ export default class GameSpace {
 
     drawWaypoints(waypoints) {
         waypoints.forEach((waypoint) => {
-            this.drawWaypoint(waypoint);
+            if (!waypoint.isDestroyed) {
+                this.drawWaypoint(waypoint);
+            }
         });
     }
 

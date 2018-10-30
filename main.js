@@ -7,7 +7,7 @@ import Waypoint from './Waypoint.js';
 import Utils from './Utils.js';
 
 //global variables
-var view = new GameSpace();
+var view = new GameSpace(500, 500);
 var agent = new Agent(view.canvas.width / 2, 0);
 var numWaypoints = 50;
 var waypoints = [];
@@ -22,6 +22,11 @@ waypoints = Array.from({length: numWaypoints}, () => {
     let x = Math.floor(Math.random() * view.canvas.width);
     let y = Math.floor(Math.random() * view.canvas.height);
     return new Waypoint(x, y);
+});
+
+// Add waypoints to the grid object
+waypoints.forEach((aWaypoint) => {
+    Utils.getSectionFromGrid(view.grid, aWaypoint.x, aWaypoint.y).push(aWaypoint);
 });
 
 function smashWaypoint ({ x, y }) {
@@ -42,18 +47,23 @@ function tick() {
     if (clickCoords) {
         agent.seek(clickCoords);
     }
+
     agent.update();
 
-    waypoints = waypoints.filter((aWaypoint) => {
+    // get the array of waypoints that are in the same grid section as the agent
+    let currentSection = Utils.getSectionFromGrid(view.grid, agent.x, agent.y);
 
-        if (Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
-            smashWaypoint(aWaypoint);
-            aWaypoint.isDestroyed = true;
-            return false;
-        }
+    if (currentSection.length) {
+        currentSection = currentSection.filter((aWaypoint) => {
+            if (Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
+                smashWaypoint(aWaypoint);
+                aWaypoint.isDestroyed = true;
+                return false;
+            }
 
-        return true;
-    });
+            return true;
+        });
+    }
 
     if (waypoints.length === 0) {
         agent.maxVelocity = 0;
