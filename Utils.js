@@ -84,6 +84,8 @@ export default class Utils {
             }
         }
 
-        return grid[xKey][yKey];
+        if (xKey && yKey && grid[xKey]) {
+            return grid[xKey][yKey];
+        }
     }
 }

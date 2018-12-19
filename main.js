@@ -26,7 +26,8 @@ waypoints = Array.from({length: numWaypoints}, () => {
 
 // Add waypoints to the grid object
 waypoints.forEach((aWaypoint) => {
-    Utils.getSectionFromGrid(view.grid, aWaypoint.x, aWaypoint.y).push(aWaypoint);
+    let section = Utils.getSectionFromGrid(view.grid, aWaypoint.x, aWaypoint.y);
+    section && section.push(aWaypoint);
 });
 
 function smashWaypoint ({ x, y }) {
@@ -72,11 +73,11 @@ function tick() {
     if (pieces.length > 0) {
         for (var i = 0; i < pieces.length; i++) {
             let aPiece = pieces[i];
-            aPiece.update();
+            aPiece.update(view.grid);  // passing the grid here temporarily to access it within Piece
             view.drawPiece(aPiece);
         }
     }
-    view.drawWaypoints(waypoints);
+    view.drawWaypoints();
     view.drawAgent(agent);
 };
 

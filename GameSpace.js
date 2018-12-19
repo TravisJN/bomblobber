@@ -46,11 +46,22 @@ export default class GameSpace {
         this.context.restore();
     }
 
-    drawWaypoints(waypoints) {
-        waypoints.forEach((waypoint) => {
-            if (!waypoint.isDestroyed) {
-                this.drawWaypoint(waypoint);
-            }
+    /**
+     * This is pretty fugly. Looping through each section of the grid and then checking
+     * if the waypoint is destroyed before drawing it.
+     * This function also filters out the waypoints that were destroyed on the previous frame
+     */
+    drawWaypoints() {
+        Object.keys(this.grid).forEach((x) => {
+            Object.keys(this.grid[x]).forEach((y) => {
+                this.grid[x][y] = this.grid[x][y].filter((aWaypoint) => {
+                    if (!aWaypoint.isDestroyed) {
+                        this.drawWaypoint(aWaypoint);
+                        return true;
+                    }
+                    return false;
+                });
+            });
         });
     }
 

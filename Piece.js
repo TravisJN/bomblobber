@@ -21,10 +21,13 @@ export default class Piece {
         this.vy = Utils.getRandomFloat(-5, 5);
     }
 
-    update() {
+    update(grid) {
         if (this.isStopped) {
             return;
         }
+
+        let waypoints = Utils.getSectionFromGrid(grid, this.x, this.y);
+
         //check if piece is at bottom of canvas
         if (this.y > canvas.height - (this.radius + 1)) {
             this.y = canvas.height - (this.radius + 1);  //+1 to make it look nice, otherwise it was slightly clipped
@@ -38,6 +41,16 @@ export default class Piece {
         //check if piece is hitting either side of canvas
         if (this.x > canvas.width - this.radius || this.x < 0 + this.radius) {
             this.vx *= -1;
+        }
+
+        if (waypoints) {
+            // check if piece is hitting a waypoint
+            waypoints.forEach((aWaypoint) => {
+                if (Utils.areColliding(this.x, this.y, this.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
+                    this.vx *= -1 * 0.95;
+                    this.vy *= -1 * 0.95;
+                }
+            });
         }
 
 
