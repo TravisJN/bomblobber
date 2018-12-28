@@ -8,7 +8,7 @@ export default class GameSpace {
         this.canvas.width = width;
         this.canvas.height = height;
 
-        this.grid = Utils.getNewGrid(width, height, 4, 4);
+        this.grid = Utils.getNewGrid(width, height, 1, 1);
     }
 
     drawPiece({ x, y, radius }) {
@@ -36,7 +36,7 @@ export default class GameSpace {
         this.context.strokeStyle = "black";
         this.context.beginPath();
         this.context.arc(x, y, radius, 0, 2*Math.PI, true);
-        this.context.stroke();
+       // this.context.stroke();
         this.context.fill();
 
         this.context.translate(x, y);

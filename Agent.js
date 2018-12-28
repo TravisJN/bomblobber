@@ -29,7 +29,9 @@ export default class Agent {
                 velocityY: 0,
                 targetx: 0,
                 targety: 0,
-                color: "yellow",
+                color: "rgb(255,255,0, 1)",
+                currentAlpha: 1,
+                alphaChange: -0.02,
                 cannonWidth: 0,
                 cannonHeight: 0,
                 radius: 0,
@@ -49,14 +51,14 @@ export default class Agent {
         this.targety = 0;
         this.vx = 0;
         this.vy = 0;
-        this.explosionSpeed = 0.8;  // incrase in radius/frame during explosion animation
+        this.explosionSpeed = 1.5;  // incrase in radius/frame during explosion animation
 
         this.velocityX = 0;
         this.velocityY = 0;
         //this.angularAcceleration = 1;
 
-        this.maxVelocity = 0;
-        this.maxAcceleration = 1;
+        this.maxVelocity = 3;
+        this.maxAcceleration = 1.2;
         this.rotation = 0;
 
         this.steeringForce = {
@@ -133,7 +135,9 @@ export default class Agent {
     explode() {
         // set the radius to 0 and gradually increase it with each frame
         if (this.radius < this.maxRadius) {
+            this.currentAlpha += this.alphaChange;
             this.radius += this.explosionSpeed;
+            this.color = "rgb(255,255,0," + this.currentAlpha + ")";
         } else {
             this.setState(this.agentStates.READY);
         }

@@ -55,6 +55,9 @@ function tick() {
 
     agent.update();
 
+    // Below is a foray into optimization. I tried splitting up the game space into a grid and only
+    // check the close quadrant for collisions. It's probably a bit of a mess and is totally unnecesary
+    // but it was fun
     // get the array of waypoints that are in the same grid section as the agent
     let currentSection = Utils.getSectionFromGrid(view.grid, agent.x, agent.y);
 
@@ -88,7 +91,7 @@ function tick() {
 tick();
 
 document.getElementById('canvas').onclick = (e) => {
-    agent.maxVelocity = agent.maxVelocity ? 0 : 2;
+    //agent.maxVelocity = agent.maxVelocity ? 0 : 3;
     // set seek destination to the mouse's click coords
     clickCoords = {
         x: e.x,
