@@ -5,7 +5,7 @@ var bounce = -0.6;
 var friction = 0.9;
 
 export default class Piece {
-    constructor(x, y) {
+    constructor(x, y, agentx, agenty) {
         this.x = x;
         this.y = y;
         this.radius = 1.5;
@@ -16,9 +16,19 @@ export default class Piece {
         this.stopBuffer = 60;   // number of frames to keep updating after this piece has reached its minimum velocity
                                 // this is to prevent pieces from sometimes stopping suddenly
 
-        //randomize the velocity of the pieces to look like explosion
-        this.vx = Utils.getRandomFloat(-2, 2);
-        this.vy = Utils.getRandomFloat(-2, 2);
+        // This ensures the pieces shoot out away from where the explosion is occurring
+        if (x < agentx) {
+            this.vx = Utils.getRandomFloat(2, 5);
+        } else {
+            this.vx = Utils.getRandomFloat(-5, 2);
+        }
+
+        if (y < agenty) {
+            this.vy = Utils.getRandomFloat(2, 8);
+        } else {
+            this.vy = Utils.getRandomFloat(-5, 2);
+        }
+
     }
 
     update(grid) {
@@ -30,7 +40,7 @@ export default class Piece {
 
         //check if piece is at bottom of canvas
         if (this.y > canvas.height - (this.radius + 1)) {
-            this.y = canvas.height - (this.radius + 1);  //+1 to make it look nice, otherwise it was slightly clipped
+            this.y = canvas.height - (this.radius + 1);  //+1 to make it look nice, otherwise it's slightly clipped
             this.vy *= bounce;
             //apply friction only when piece is on the floor
             this.vx *= friction;
@@ -47,8 +57,13 @@ export default class Piece {
             // check if piece is hitting a waypoint
             waypoints.forEach((aWaypoint) => {
                 if (Utils.areColliding(this.x, this.y, this.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
-                    this.vx *= -1 * 0.95;
-                    this.vy *= -1 * 0.95;
+                    this.vx *= -1;
+                    this.vy *= -1;
+                    // pieces with high velocity will clip into the waypoints so we need to make sure they bounce clear of the radius of the waypoint
+                    this.vx += this.radius;
+                    this.vy += this.radius;
+                    this.vx *= friction;
+                    this.vy *= friction;
                 }
             });
         }

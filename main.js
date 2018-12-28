@@ -9,7 +9,7 @@ import Utils from './Utils.js';
 //global variables
 var view = new GameSpace(500, 500);
 var agent = new Agent(view.canvas.width / 2, 0);
-var numWaypoints = 50;
+var numWaypoints = 100;
 var waypoints = [];
 var pieces = [];
 var numPieces = 5;  //number of pieces the waypoints smash into
@@ -30,10 +30,10 @@ waypoints.forEach((aWaypoint) => {
     section && section.push(aWaypoint);
 });
 
-function smashWaypoint ({ x, y }) {
+function smashWaypoint ({ x, y }, agent) {
     //create small pieces at the current waypoint's position
     for (var i = 0; i < numPieces; i++) {
-        var newPiece = new Piece(x, y);
+        var newPiece = new Piece(x, y, agent.x, agent.y);
         pieces.push(newPiece);
     }
 }
@@ -64,7 +64,7 @@ function tick() {
     if (currentSection.length) {
         currentSection = currentSection.filter((aWaypoint) => {
             if (Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
-                smashWaypoint(aWaypoint);
+                smashWaypoint(aWaypoint, agent);
                 aWaypoint.isDestroyed = true;
                 return false;
             }
