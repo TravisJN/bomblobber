@@ -64,7 +64,7 @@ function tick() {
 
     if (currentSection.length) {
         currentSection = currentSection.filter((aWaypoint) => {
-            if (Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
+            if (agent.currentState === agent.agentStates.EXPLODING && Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
                 smashWaypoint(aWaypoint, agent);
                 aWaypoint.isDestroyed = true;
                 return false;
