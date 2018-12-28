@@ -9,10 +9,11 @@ import Utils from './Utils.js';
 //global variables
 var view = new GameSpace(500, 500);
 var agent = new Agent(view.canvas.width / 2, 0);
+var fixedAgent = new Agent(view.canvas.width / 2, 0);  // this is the cannon fixed at the top of the screen
 var numWaypoints = 100;
 var waypoints = [];
 var pieces = [];
-var numPieces = 5;  //number of pieces the waypoints smash into
+var numPieces = 10;  //number of pieces the waypoints smash into
 var clickCoords;
 
 // Create an array of waypoints with random x,y values
@@ -20,7 +21,7 @@ var clickCoords;
 // https://stackoverflow.com/questions/3746725/create-a-javascript-array-containing-1-n
 waypoints = Array.from({length: numWaypoints}, () => {
     let x = Math.floor(Math.random() * view.canvas.width);
-    let y = Math.floor(Math.random() * view.canvas.height);
+    let y = Math.floor(Math.random() * (view.canvas.height - 50));
     return new Waypoint(x, y);
 });
 
@@ -74,10 +75,6 @@ function tick() {
         });
     }
 
-    if (waypoints.length === 0) {
-        agent.maxVelocity = 0;
-    }
-
     if (pieces.length > 0) {
         for (var i = 0; i < pieces.length; i++) {
             let aPiece = pieces[i];
@@ -85,18 +82,21 @@ function tick() {
             view.drawPiece(aPiece);
         }
     }
+
     view.drawWaypoints();
     view.drawAgent(agent);
+    view.drawAgent(fixedAgent);
 };
 
 tick();
 
 document.getElementById('canvas').onclick = (e) => {
-    //agent.maxVelocity = agent.maxVelocity ? 0 : 3;
     // set seek destination to the mouse's click coords
-    clickCoords = {
-        x: e.x,
-        y: e.y,
-    };
+    if (agent.currentState !== agent.agentStates.EXPLODING) {
+        clickCoords = {
+            x: e.x,
+            y: e.y,
+        };
+    }
 }
 

@@ -29,7 +29,7 @@ export default class GameSpace {
         this.context.restore();
     }
 
-    drawAgent({ x, y, radius, color, rotation, cannonWidth, cannonHeight, currentState }) {
+    drawAgent({ x, y, radius, color, rotation, cannonWidth, cannonHeight }) {
         this.context.save();
 
         this.context.fillStyle = color;
@@ -74,14 +74,13 @@ export default class GameSpace {
     }
 
     screenShake() {
-
-        this.canvas.className = "offset";
         let timer = setInterval(() => {
             this.canvas.className = (this.canvas.className === "default") ? "offset" : "default";
         }, 50);
+
         setTimeout(() => {
             clearInterval(timer);
             this.canvas.className = "default";
-        }, 150);
+        }, 200);
     }
 }
