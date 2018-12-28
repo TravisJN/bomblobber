@@ -1,6 +1,6 @@
 import Utils from './Utils.js';
 
-var gravity = 0.25;
+var gravity = 0.1;
 var bounce = -0.6;
 var friction = 0.9;
 
@@ -17,8 +17,8 @@ export default class Piece {
                                 // this is to prevent pieces from sometimes stopping suddenly
 
         //randomize the velocity of the pieces to look like explosion
-        this.vx = Utils.getRandomFloat(-5, 5);
-        this.vy = Utils.getRandomFloat(-5, 5);
+        this.vx = Utils.getRandomFloat(-2, 2);
+        this.vy = Utils.getRandomFloat(-2, 2);
     }
 
     update(grid) {

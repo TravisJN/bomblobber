@@ -1,16 +1,55 @@
+import Utils from "./Utils.js";
 
 export default class Agent {
+
     constructor(x, y) {
-        this.color = "red";
-        this.radius = 12;
-        this.cannonWidth = 5;
-        this.cannonHeight = 15;
+        // this.color = "red";
+        // this.radius = 12;
+        // this.cannonWidth = 5;
+        // this.cannonHeight = 15;
+        this.Options = {
+            ready: {
+                x,
+                y,
+                vx: 0,
+                vy: 0,
+                velocityX: 0,
+                velocityY: 0,
+                targetx: 0,
+                targety: 0,
+                color: "red",
+                radius: 12,
+                cannonWidth: 5,
+                cannonHeight: 15
+            },
+            exploding: {
+                vx: 0,
+                vy: 0,
+                velocityX: 0,
+                velocityY: 0,
+                targetx: 0,
+                targety: 0,
+                color: "yellow",
+                cannonWidth: 0,
+                cannonHeight: 0,
+                radius: 0,
+                maxRadius: 50
+            },
+            seeking: {
+                color: "red",
+                radius: 12,
+                cannonWidth: 5,
+                cannonHeight: 15
+            }
+        };
+
         this.x = x;
         this.y = y;
         this.targetx = 0;
         this.targety = 0;
         this.vx = 0;
         this.vy = 0;
+        this.explosionSpeed = 0.8;  // incrase in radius/frame during explosion animation
 
         this.velocityX = 0;
         this.velocityY = 0;
@@ -24,10 +63,39 @@ export default class Agent {
             linearX: 0,
             linearY: 0,
         };
+
+        this.agentStates = {
+            READY: "READY",
+            SEEKING: "SEEKING",
+            EXPLODING: "EXPLODING",
+            DONE: "DONE"
+        };
+
+        this.setState(this.agentStates.READY);
+    }
+
+    setState(newState) {
+        this.currentState = this.agentStates[newState];
+
+        switch (newState) {
+            case "EXPLODING":
+                _.assignIn(this, this.Options.exploding);
+                break;
+            case "SEEKING":
+                _.assignIn(this, this.Options.seeking);
+                break;
+            case "READY":
+            default:
+                _.assignIn(this, this.Options.ready);
+                break;
+        }
     }
 
     update() {
-        if (this.maxVelocity === 0) {
+        if (this.currentState === this.agentStates.EXPLODING) {
+            this.explode();
+            return;
+        } else if (this.currentState === this.agentStates.READY) {
             return;
         }
 
@@ -51,6 +119,8 @@ export default class Agent {
     seek({ x, y }) {
         var dx, dy;
 
+        this.setState(this.agentStates.SEEKING);
+
         dx = x - this.x;
         dy = y - this.y;
 
@@ -58,5 +128,24 @@ export default class Agent {
 
         this.steeringForce.linearX = dx / distance * this.maxAcceleration;
         this.steeringForce.linearY = dy / distance * this.maxAcceleration;
+    }
+
+    explode() {
+        // set the radius to 0 and gradually increase it with each frame
+        if (this.radius < this.maxRadius) {
+            this.radius += this.explosionSpeed;
+        } else {
+            this.setState(this.agentStates.READY);
+        }
+    }
+
+    checkArrived({ x, y }) {
+        var distance = Utils.getDistance(this.x, this.y, x, y);
+
+        if (distance < 5) {
+            this.setState(this.agentStates.EXPLODING);
+            return true;
+        }
+        return false;
     }
 }

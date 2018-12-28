@@ -29,8 +29,9 @@ export default class GameSpace {
         this.context.restore();
     }
 
-    drawAgent({ x, y, radius, color, rotation, cannonWidth, cannonHeight }) {
+    drawAgent({ x, y, radius, color, rotation, cannonWidth, cannonHeight, currentState }) {
         this.context.save();
+
         this.context.fillStyle = color;
         this.context.strokeStyle = "black";
         this.context.beginPath();

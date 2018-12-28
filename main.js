@@ -46,7 +46,11 @@ function tick() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     if (clickCoords) {
-        agent.seek(clickCoords);
+        if (agent.checkArrived(clickCoords)) {
+            clickCoords = null;
+        } else {
+            agent.seek(clickCoords);
+        }
     }
 
     agent.update();
@@ -84,7 +88,7 @@ function tick() {
 tick();
 
 document.getElementById('canvas').onclick = (e) => {
-    agent.maxVelocity = agent.maxVelocity ? 0 : 5;
+    agent.maxVelocity = agent.maxVelocity ? 0 : 2;
     // set seek destination to the mouse's click coords
     clickCoords = {
         x: e.x,
