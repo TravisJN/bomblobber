@@ -72,4 +72,16 @@ export default class GameSpace {
             this.drawPiece(piece);
         })
     }
+
+    screenShake() {
+
+        this.canvas.className = "offset";
+        let timer = setInterval(() => {
+            this.canvas.className = (this.canvas.className === "default") ? "offset" : "default";
+        }, 50);
+        setTimeout(() => {
+            clearInterval(timer);
+            this.canvas.className = "default";
+        }, 150);
+    }
 }

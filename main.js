@@ -48,6 +48,7 @@ function tick() {
     if (clickCoords) {
         if (agent.checkArrived(clickCoords)) {
             clickCoords = null;
+            view.screenShake();
         } else {
             agent.seek(clickCoords);
         }
@@ -98,3 +99,4 @@ document.getElementById('canvas').onclick = (e) => {
         y: e.y,
     };
 }
+
