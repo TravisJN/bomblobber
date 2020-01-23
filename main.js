@@ -13,7 +13,7 @@ var fixedAgent = new Agent(view.canvas.width / 2, 0);  // this is the cannon fix
 var numWaypoints = 100;
 var waypoints = [];
 var pieces = [];
-var numPieces = 10;  //number of pieces the waypoints smash into
+var numPieces = 2;  //number of pieces the waypoints smash into
 var clickCoords;
 
 // Create an array of waypoints with random x,y values

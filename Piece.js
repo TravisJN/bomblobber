@@ -9,6 +9,7 @@ export default class Piece {
         this.x = x;
         this.y = y;
         this.radius = 1.5;
+        this.maxSpeed = 1;  // no idea how fast these things go
 
         this.willStop = false;
         this.isStopped = false;
@@ -68,6 +69,23 @@ export default class Piece {
             });
         }
 
+                // super rudimentary speed cap
+                // doesn't work
+                // if (Math.abs(this.vx) > this.maxSpeed) {
+                //     if (this.vx < 0) {
+                //         this.vx = this.maxSpeed * -1;
+                //     } else {
+                //         this.vx = this.maxSpeed;
+                //     }
+                // }
+                // // super rudimentary speed cap
+                // if (Math.abs(this.vy) > this.maxSpeed) {
+                //     if (this.vy < 0) {
+                //         this.vy = this.maxSpeed * -1;
+                //     } else {
+                //         this.vy = this.maxSpeed;
+                //     }
+                // }
 
         this.x += this.vx;
         this.y += this.vy;
