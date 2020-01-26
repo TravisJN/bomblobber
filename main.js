@@ -5,6 +5,7 @@ import GameSpace from './GameSpace.js';
 import Piece from './Piece.js';
 import Waypoint from './Waypoint.js';
 import Utils from './Utils.js';
+import Points from './Points.js';
 
 //global variables
 var view = new GameSpace(500, 500);
@@ -13,8 +14,10 @@ var fixedAgent = new Agent(view.canvas.width / 2, 0);  // this is the cannon fix
 var numWaypoints = 100;
 var waypoints = [];
 var pieces = [];
-var numPieces = 2;  //number of pieces the waypoints smash into
+// var numPieces = 2;  //number of pieces the waypoints smash into
 var clickCoords;
+var pointsModel = new Points();
+var pointsPerPiece = 10;
 
 // Create an array of waypoints with random x,y values
 // Creating an array based on this:
@@ -33,11 +36,14 @@ waypoints.forEach((aWaypoint) => {
 
 function smashWaypoint ({ x, y }, agent) {
     //create small pieces at the current waypoint's position
-    for (var i = 0; i < numPieces; i++) {
+    for (var i = 0; i < Math.floor(Utils.getRandomFloat(2, 6)); i++) {
         var newPiece = new Piece(x, y, agent.x, agent.y);
         pieces.push(newPiece);
+        pointsModel.addPoints(pointsPerPiece);
     }
 }
+
+var debugCounter = 0;
 
 //game loop
 function tick() {
@@ -86,9 +92,12 @@ function tick() {
     view.drawWaypoints();
     view.drawAgent(agent);
     view.drawAgent(fixedAgent);
-};
 
-tick();
+    if (debugCounter++ > 60) {
+        console.log('Total points: ', pointsModel.points);
+        debugCounter = 0;
+    }
+};
 
 document.getElementById('canvas').onclick = (e) => {
     // set seek destination to the mouse's click coords
@@ -100,3 +109,4 @@ document.getElementById('canvas').onclick = (e) => {
     }
 }
 
+tick();
