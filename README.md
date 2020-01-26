@@ -1,3 +1,3 @@
 # bomblobber
 
-check the `develop` branch yo
+Blow up the evil circles to get points
