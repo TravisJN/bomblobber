@@ -58,7 +58,7 @@ export default class Agent {
         this.velocityY = 0;
         //this.angularAcceleration = 1;
 
-        this.maxVelocity = 3;
+        this.maxVelocity = 4;
         this.maxAcceleration = 1.2;
         //this.rotation = 90;
 
@@ -74,7 +74,18 @@ export default class Agent {
             DONE: 'DONE',
         };
 
+        this.clickCoords = {
+            x: 0,
+            y: 0,
+        };
+
+        this.getState = this.getState.bind(this);
+
         this.setState(this.agentStates.READY);
+    }
+
+    getState() {
+        return this.currentState;
     }
 
     setState(newState) {
@@ -119,9 +130,11 @@ export default class Agent {
         this.rotation = Math.atan2(this.vy, this.vx);
     }
 
-    seek({ x, y }) {
+    seek(clickCoords) {
+        const { x, y } = clickCoords;
         var dx, dy;
 
+        this.clickCoords = clickCoords;
         this.setState(this.agentStates.SEEKING);
 
         dx = x - this.x;

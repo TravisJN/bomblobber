@@ -40,7 +40,9 @@ export default class GameSpace {
         this.context.restore();
     }
 
-    drawAgent({ x, y, radius, color, rotation, cannonWidth, cannonHeight }) {
+    // drawAgent({ x, y, radius, color, rotation, cannonWidth, cannonHeight, clickCoords, getState, agentStates }) {
+    drawAgent(agent) {
+        const { x, y, radius, color, rotation, cannonWidth, cannonHeight, clickCoords, getState, agentStates } = agent;
         this.context.save();
 
         this.context.fillStyle = color;
@@ -53,14 +55,20 @@ export default class GameSpace {
         this.context.translate(x, y);
         this.context.rotate(rotation + Math.PI / 2);
         this.context.fillRect(-cannonWidth / 2, 0, cannonWidth, -cannonHeight);
-        this.context.strokeRect(
-            -cannonWidth / 2,
-            0,
-            cannonWidth,
-            -cannonHeight
-        );
+        this.context.strokeRect(-cannonWidth / 2, 0, cannonWidth, -cannonHeight);
 
         this.context.restore();
+
+        if (getState() === agentStates.SEEKING) {
+            this.context.save();
+
+            this.context.strokeStyle = 'red';
+            this.context.beginPath();
+            this.context.arc(clickCoords.x, clickCoords.y, radius, 0, 2 * Math.PI, true);
+            this.context.stroke();
+
+            this.context.restore();
+        }
     }
 
     /**
@@ -91,8 +99,7 @@ export default class GameSpace {
 
     screenShake() {
         let timer = setInterval(() => {
-            this.canvas.className =
-                this.canvas.className === 'default' ? 'offset' : 'default';
+            this.canvas.className = this.canvas.className === 'default' ? 'offset' : 'default';
         }, 50);
 
         setTimeout(() => {

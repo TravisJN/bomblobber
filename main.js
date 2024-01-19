@@ -75,14 +75,7 @@ function tick() {
         currentSection = currentSection.filter((aWaypoint) => {
             if (
                 agent.currentState === agent.agentStates.EXPLODING &&
-                Utils.areColliding(
-                    agent.x,
-                    agent.y,
-                    agent.radius,
-                    aWaypoint.x,
-                    aWaypoint.y,
-                    aWaypoint.radius
-                )
+                Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)
             ) {
                 smashWaypoint(aWaypoint, agent);
                 aWaypoint.isDestroyed = true;
@@ -98,16 +91,7 @@ function tick() {
             let aPiece = pieces[i];
             aPiece.update(view.grid); // passing the grid here temporarily to access it within Piece
             currentSection = currentSection.filter((aWaypoint) => {
-                if (
-                    Utils.areColliding(
-                        aPiece.x,
-                        aPiece.y,
-                        aPiece.radius,
-                        aWaypoint.x,
-                        aWaypoint.y,
-                        aWaypoint.radius
-                    )
-                ) {
+                if (Utils.areColliding(aPiece.x, aPiece.y, aPiece.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
                     smashWaypoint(aWaypoint, aPiece);
                     aWaypoint.isDestroyed = true;
                     return false;

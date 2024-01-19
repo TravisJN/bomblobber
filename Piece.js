@@ -13,8 +13,8 @@ export default class Piece {
         this.willStop = false;
         this.isStopped = false;
         this.bufferCount = 0;
-        this.stopBuffer = 60;   // number of frames to keep updating after this piece has reached its minimum velocity
-                                // this is to prevent pieces from sometimes stopping suddenly
+        this.stopBuffer = 60; // number of frames to keep updating after this piece has reached its minimum velocity
+        // this is to prevent pieces from sometimes stopping suddenly
 
         // This ensures the pieces shoot out away from where the explosion is occurring
         if (x < agentx) {
@@ -28,7 +28,6 @@ export default class Piece {
         } else {
             this.vy = Utils.getRandomFloat(-5, 2);
         }
-
     }
 
     update(grid) {
@@ -40,7 +39,7 @@ export default class Piece {
 
         //check if piece is at bottom of canvas
         if (this.y > canvas.height - (this.radius + 1)) {
-            this.y = canvas.height - (this.radius + 1);  //+1 to make it look nice, otherwise it's slightly clipped
+            this.y = canvas.height - (this.radius + 1); //+1 to make it look nice, otherwise it's slightly clipped
             this.vy *= bounce;
             //apply friction only when piece is on the floor
             this.vx *= friction;
@@ -67,7 +66,6 @@ export default class Piece {
                 }
             });
         }
-
 
         this.x += this.vx;
         this.y += this.vy;
