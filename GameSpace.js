@@ -2,8 +2,8 @@ import Utils from './Utils.js';
 
 export default class GameSpace {
     constructor(width, height) {
-        this.canvas = document.getElementById("canvas");
-        this.context = canvas.getContext("2d");
+        this.canvas = document.getElementById('canvas');
+        this.context = canvas.getContext('2d');
 
         this.canvas.width = width;
         this.canvas.height = height;
@@ -11,9 +11,20 @@ export default class GameSpace {
         this.grid = Utils.getNewGrid(width, height, 1, 1);
     }
 
+    drawPoints(points) {
+        this.context.save();
+        // Set text properties
+        this.context.font = '24px Arial';
+        this.context.fillStyle = 'black';
+
+        // Display points
+        this.context.fillText(`Points: ${points}`, 20, 20);
+        this.context.restore();
+    }
+
     drawPiece({ x, y, radius }) {
         this.context.save();
-        this.context.StrokeStyle = "red";
+        this.context.StrokeStyle = 'red';
         this.context.beginPath();
         this.context.arc(x, y, radius, 0, 2 * Math.PI, true);
         this.context.stroke();
@@ -22,7 +33,7 @@ export default class GameSpace {
 
     drawWaypoint({ x, y, radius }) {
         this.context.save();
-        this.context.StrokeStyle = "black";
+        this.context.StrokeStyle = 'black';
         this.context.beginPath();
         this.context.arc(x, y, radius, 0, 2 * Math.PI, true);
         this.context.stroke();
@@ -33,16 +44,21 @@ export default class GameSpace {
         this.context.save();
 
         this.context.fillStyle = color;
-        this.context.strokeStyle = "black";
+        this.context.strokeStyle = 'black';
         this.context.beginPath();
-        this.context.arc(x, y, radius, 0, 2*Math.PI, true);
-       // this.context.stroke();
+        this.context.arc(x, y, radius, 0, 2 * Math.PI, true);
+        // this.context.stroke();
         this.context.fill();
 
         this.context.translate(x, y);
         this.context.rotate(rotation + Math.PI / 2);
         this.context.fillRect(-cannonWidth / 2, 0, cannonWidth, -cannonHeight);
-        this.context.strokeRect(-cannonWidth / 2, 0, cannonWidth, -cannonHeight);
+        this.context.strokeRect(
+            -cannonWidth / 2,
+            0,
+            cannonWidth,
+            -cannonHeight
+        );
 
         this.context.restore();
     }
@@ -70,17 +86,18 @@ export default class GameSpace {
     drawPieces(pieces) {
         pieces.forEach((piece) => {
             this.drawPiece(piece);
-        })
+        });
     }
 
     screenShake() {
         let timer = setInterval(() => {
-            this.canvas.className = (this.canvas.className === "default") ? "offset" : "default";
+            this.canvas.className =
+                this.canvas.className === 'default' ? 'offset' : 'default';
         }, 50);
 
         setTimeout(() => {
             clearInterval(timer);
-            this.canvas.className = "default";
+            this.canvas.className = 'default';
         }, 200);
     }
 }

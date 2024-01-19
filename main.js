@@ -16,6 +16,9 @@ var pieces = [];
 var numPieces = 4; //number of pieces the waypoints smash into
 var clickCoords;
 
+var points = 0;
+var POINTS_T0_WIN = 25;
+
 // Create an array of waypoints with random x,y values
 // Creating an array based on this:
 // https://stackoverflow.com/questions/3746725/create-a-javascript-array-containing-1-n
@@ -37,6 +40,11 @@ function smashWaypoint({ x, y }, agent) {
         var newPiece = new Piece(x, y, agent.x, agent.y);
         pieces.push(newPiece);
     }
+    points++;
+}
+
+function resetGame() {
+    window.location.reload();
 }
 
 //game loop
@@ -114,6 +122,16 @@ function tick() {
     view.drawWaypoints();
     view.drawAgent(agent);
     view.drawAgent(fixedAgent);
+    view.drawPoints(points);
+
+    if (points >= POINTS_T0_WIN) {
+        // show reset prompt
+        setTimeout(() => {
+            if (window.confirm('You WIN')) {
+                resetGame();
+            }
+        }, 500);
+    }
 }
 
 tick();
