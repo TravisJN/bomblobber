@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 import Agent from './Agent.js';
 import GameSpace from './GameSpace.js';
@@ -9,17 +9,17 @@ import Utils from './Utils.js';
 //global variables
 var view = new GameSpace(500, 500);
 var agent = new Agent(view.canvas.width / 2, 0);
-var fixedAgent = new Agent(view.canvas.width / 2, 0);  // this is the cannon fixed at the top of the screen
-var numWaypoints = 100;
+var fixedAgent = new Agent(view.canvas.width / 2, 0); // this is the cannon fixed at the top of the screen
+var numWaypoints = 25;
 var waypoints = [];
 var pieces = [];
-var numPieces = 10;  //number of pieces the waypoints smash into
+var numPieces = 4; //number of pieces the waypoints smash into
 var clickCoords;
 
 // Create an array of waypoints with random x,y values
 // Creating an array based on this:
 // https://stackoverflow.com/questions/3746725/create-a-javascript-array-containing-1-n
-waypoints = Array.from({length: numWaypoints}, () => {
+waypoints = Array.from({ length: numWaypoints }, () => {
     let x = Math.floor(Math.random() * view.canvas.width);
     let y = Math.floor(Math.random() * (view.canvas.height - 50));
     return new Waypoint(x, y);
@@ -31,7 +31,7 @@ waypoints.forEach((aWaypoint) => {
     section && section.push(aWaypoint);
 });
 
-function smashWaypoint ({ x, y }, agent) {
+function smashWaypoint({ x, y }, agent) {
     //create small pieces at the current waypoint's position
     for (var i = 0; i < numPieces; i++) {
         var newPiece = new Piece(x, y, agent.x, agent.y);
@@ -65,7 +65,17 @@ function tick() {
 
     if (currentSection.length) {
         currentSection = currentSection.filter((aWaypoint) => {
-            if (agent.currentState === agent.agentStates.EXPLODING && Utils.areColliding(agent.x, agent.y, agent.radius, aWaypoint.x, aWaypoint.y, aWaypoint.radius)) {
+            if (
+                agent.currentState === agent.agentStates.EXPLODING &&
+                Utils.areColliding(
+                    agent.x,
+                    agent.y,
+                    agent.radius,
+                    aWaypoint.x,
+                    aWaypoint.y,
+                    aWaypoint.radius
+                )
+            ) {
                 smashWaypoint(aWaypoint, agent);
                 aWaypoint.isDestroyed = true;
                 return false;
@@ -78,7 +88,25 @@ function tick() {
     if (pieces.length > 0) {
         for (var i = 0; i < pieces.length; i++) {
             let aPiece = pieces[i];
-            aPiece.update(view.grid);  // passing the grid here temporarily to access it within Piece
+            aPiece.update(view.grid); // passing the grid here temporarily to access it within Piece
+            currentSection = currentSection.filter((aWaypoint) => {
+                if (
+                    Utils.areColliding(
+                        aPiece.x,
+                        aPiece.y,
+                        aPiece.radius,
+                        aWaypoint.x,
+                        aWaypoint.y,
+                        aWaypoint.radius
+                    )
+                ) {
+                    smashWaypoint(aWaypoint, aPiece);
+                    aWaypoint.isDestroyed = true;
+                    return false;
+                }
+
+                return true;
+            });
             view.drawPiece(aPiece);
         }
     }
@@ -86,7 +114,7 @@ function tick() {
     view.drawWaypoints();
     view.drawAgent(agent);
     view.drawAgent(fixedAgent);
-};
+}
 
 tick();
 
@@ -98,5 +126,4 @@ document.getElementById('canvas').onclick = (e) => {
             y: e.y,
         };
     }
-}
-
+};
