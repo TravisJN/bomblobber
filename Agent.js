@@ -1,7 +1,6 @@
-import Utils from "./Utils.js";
+import Utils from './Utils.js';
 
 export default class Agent {
-
     constructor(x, y) {
         // this.color = "red";
         // this.radius = 12;
@@ -17,11 +16,11 @@ export default class Agent {
                 velocityY: 0,
                 targetx: 0,
                 targety: 0,
-                color: "red",
+                color: 'red',
                 radius: 12,
                 cannonWidth: 5,
                 cannonHeight: 15,
-                rotation: 1.5
+                rotation: 1.5,
             },
             exploding: {
                 vx: 0,
@@ -30,22 +29,22 @@ export default class Agent {
                 velocityY: 0,
                 targetx: 0,
                 targety: 0,
-                color: "rgb(255,255,0, 1)",
+                color: 'rgb(255,255,0, 1)',
                 currentAlpha: 1,
                 alphaChange: -0.02,
                 cannonWidth: 0,
                 cannonHeight: 0,
                 radius: 0,
                 maxRadius: 50,
-                explosionSpeed: 1.5,  // incrase in radius/frame during explosion animation
-                explosionDuration: 200
+                explosionSpeed: 1.5, // incrase in radius/frame during explosion animation
+                explosionDuration: 60, // number of frames
             },
             seeking: {
-                color: "red",
+                color: 'red',
                 radius: 12,
                 cannonWidth: 5,
-                cannonHeight: 15
-            }
+                cannonHeight: 15,
+            },
         };
 
         this.x = x;
@@ -69,10 +68,10 @@ export default class Agent {
         };
 
         this.agentStates = {
-            READY: "READY",
-            SEEKING: "SEEKING",
-            EXPLODING: "EXPLODING",
-            DONE: "DONE"
+            READY: 'READY',
+            SEEKING: 'SEEKING',
+            EXPLODING: 'EXPLODING',
+            DONE: 'DONE',
         };
 
         this.setState(this.agentStates.READY);
@@ -82,13 +81,13 @@ export default class Agent {
         this.currentState = this.agentStates[newState];
 
         switch (newState) {
-            case "EXPLODING":
+            case 'EXPLODING':
                 _.assignIn(this, this.Options.exploding);
                 break;
-            case "SEEKING":
+            case 'SEEKING':
                 _.assignIn(this, this.Options.seeking);
                 break;
-            case "READY":
+            case 'READY':
             default:
                 _.assignIn(this, this.Options.ready);
                 break;
@@ -114,7 +113,7 @@ export default class Agent {
         //check for maximum velocity and stop accelerating when agent reaches it
         if (speed > this.maxVelocity && speed > 0) {
             this.vx = (this.vx / speed) * this.maxVelocity;
-            this.vy = (this.vy / speed) * this.maxVelocity
+            this.vy = (this.vy / speed) * this.maxVelocity;
         }
 
         this.rotation = Math.atan2(this.vy, this.vx);
@@ -130,8 +129,8 @@ export default class Agent {
 
         var distance = Math.sqrt(dx * dx + dy * dy);
 
-        this.steeringForce.linearX = dx / distance * this.maxAcceleration;
-        this.steeringForce.linearY = dy / distance * this.maxAcceleration;
+        this.steeringForce.linearX = (dx / distance) * this.maxAcceleration;
+        this.steeringForce.linearY = (dy / distance) * this.maxAcceleration;
     }
 
     explode() {
@@ -139,12 +138,13 @@ export default class Agent {
         if (this.explosionDuration-- > 0) {
             if (this.currentAlpha > 0) {
                 this.currentAlpha += this.alphaChange;
-                this.color = "rgb(255,255,0," + this.currentAlpha + ")";
+                this.color = 'rgb(255,255,0,' + this.currentAlpha + ')';
             }
             if (this.radius < this.maxRadius) {
                 this.radius += this.explosionSpeed;
             }
         } else {
+            console.log('rerady');
             this.setState(this.agentStates.READY);
         }
     }
